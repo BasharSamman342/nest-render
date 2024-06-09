@@ -1,4 +1,5 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { compare } from 'bcrypt';
 import { I18nService } from 'nestjs-i18n';
 import { SignUpDto } from 'src/auth/dto/sign-up.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -20,6 +21,15 @@ export class UserService {
 
     async find(credentials:any){
         const user = this.prismaService.user.findUnique({where:credentials})
+        return user
+    }
+
+    async validateUser(email:string,pwd:string){
+        const user = await this.findOrFail({email:email})
+        const isMatched = compare(pwd,user.password)
+        if (!isMatched) {
+            throw new UnauthorizedException(this.i18nService.t("validations.password_not_match"))
+        }
         return user
     }
 

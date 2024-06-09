@@ -1,3 +1,4 @@
 {
-    "unique":"email should be unique"
+    "unique":"email should be unique",
+    "password_not_match":"Password do not match our records"
 }
