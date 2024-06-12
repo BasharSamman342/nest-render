@@ -8,17 +8,26 @@ import { UserExistsRule } from 'src/validations/unique/unique.decorator';
 import { LocalStrategy } from './local.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { SamePasswordRule } from 'src/validations/same_password/same_password.decorator';
 
 @Module({
   controllers: [AuthController],
-  imports:[
+  imports: [
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
       secret: process.env.SECRET,
       signOptions: { expiresIn: '3600s' },
-    }),UserModule,
+    }),
+    UserModule,
     // PassportModule.register({ defaultStrategy: 'jwt' }),
   ],
-  providers: [AuthService,UserService,PrismaService,UserExistsRule,LocalStrategy]
+  providers: [
+    AuthService,
+    UserService,
+    PrismaService,
+    UserExistsRule,
+    LocalStrategy,
+    SamePasswordRule,
+  ],
 })
 export class AuthModule {}
