@@ -7,9 +7,11 @@ import { AcceptLanguageResolver, HeaderResolver, I18nModule, QueryResolver } fro
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
+    PassportModule,
     ConfigModule.forRoot(),
     I18nModule.forRoot({
       fallbackLanguage: 'en',

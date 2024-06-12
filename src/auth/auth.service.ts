@@ -4,6 +4,8 @@ import { UserService } from 'src/user/user.service';
 import { genSalt, hash } from 'bcrypt';
 import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -27,5 +29,9 @@ export class AuthService {
         const token = await this.jwtService.sign(payload)
         const {password,...result} = user
         return {...result,token}
+    }
+
+    async updateProfile(data:UpdateProfileDto,user:User){
+        return this.userService.updateProfile(data,user)
     }
 }

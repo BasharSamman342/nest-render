@@ -1,7 +1,9 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { User } from '@prisma/client';
 import { compare } from 'bcrypt';
 import { I18nService } from 'nestjs-i18n';
 import { SignUpDto } from 'src/auth/dto/sign-up.dto';
+import { UpdateProfileDto } from 'src/auth/dto/update-profile.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -24,12 +26,12 @@ export class UserService {
         return user
     }
 
-    async validateUser(email:string,pwd:string){
+    async validateUser(email:string,pwd?:string){
         const user = await this.findOrFail({email:email})
-        const isMatched = compare(pwd,user.password)
-        if (!isMatched) {
-            throw new UnauthorizedException(this.i18nService.t("validations.password_not_match"))
-        }
+        // const isMatched = compare(pwd,user.password)
+        // if (!isMatched) {
+        //     throw new UnauthorizedException(this.i18nService.t("validations.password_not_match"))
+        // }
         return user
     }
 
@@ -40,5 +42,19 @@ export class UserService {
         } catch (error) {
             throw new BadRequestException(error)
         }
+    }
+
+    async updateProfile(updateProfile:UpdateProfileDto,user:User){
+        const res = await this.prismaService.user.update({
+            data:{
+                first_name:updateProfile.first_name,
+                last_name:updateProfile.last_name
+            },
+            where:{
+                id:user.id
+            }
+        })
+
+        return res
     }
 }
